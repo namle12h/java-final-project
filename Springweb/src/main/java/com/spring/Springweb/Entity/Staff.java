@@ -36,7 +36,10 @@ import java.util.Date;
     @NamedQuery(name = "Staff.findByEmail", query = "SELECT s FROM Staff s WHERE s.email = :email"),
     @NamedQuery(name = "Staff.findByRole", query = "SELECT s FROM Staff s WHERE s.role = :role"),
     @NamedQuery(name = "Staff.findByHireDate", query = "SELECT s FROM Staff s WHERE s.hireDate = :hireDate"),
+    @NamedQuery(name = "Staff.findByUsername", query = "SELECT s FROM Staff s WHERE s.username = :username"),
+    @NamedQuery(name = "Staff.findByPassword", query = "SELECT s FROM Staff s WHERE s.passwordHash = :passwordHash"),
     @NamedQuery(name = "Staff.findByStatus", query = "SELECT s FROM Staff s WHERE s.status = :status")})
+
 public class Staff implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -54,6 +57,13 @@ public class Staff implements Serializable {
     @Size(max = 20)
     @Column(name = "Phone")
     private String phone;
+
+    @Column(name = "Username", nullable = false, unique = true, length = 100)
+    private String username;
+
+    @Column(name = "PasswordHash", nullable = false, length = 200)
+    private String passwordHash;
+
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Size(max = 200)
     @Column(name = "Email")
@@ -152,6 +162,22 @@ public class Staff implements Serializable {
         this.appointmentCollection = appointmentCollection;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -176,5 +202,5 @@ public class Staff implements Serializable {
     public String toString() {
         return "com.spring.Springweb.Entity.Staff[ id=" + id + " ]";
     }
-    
+
 }

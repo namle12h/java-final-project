@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
     // Có thể thêm custom query nếu cần
     Optional<Customer> findByPhone(String phone);
-    
+    boolean existsByPhone(String phone);
+    boolean existsByEmail(String email);
   
 }

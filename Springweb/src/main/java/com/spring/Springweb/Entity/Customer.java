@@ -5,7 +5,6 @@
 package com.spring.Springweb.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -16,14 +15,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Collection;
@@ -55,32 +51,27 @@ public class Customer implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 200)
-    @NotBlank(message = "Tên khách hàng không được để trống")
-    @Size(max = 200, message = "Tên không được quá 200 ký tự")
     @Column(name = "Name")
     private String name;
-    // @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$", message="Invalid phone/fax format, should be as xxx-xxx-xxxx")//if the field contains phone or fax number consider using this annotation to enforce field validation
-    @Size(max = 20)
-    @Pattern(regexp = "^(0[0-9]{9})$", message = "Số điện thoại không hợp lệ")
-    @Column(name = "Phone",unique = true)
+
+    @Column(name = "Phone", unique = true)
     private String phone;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
-    @Size(max = 200)
-    @Email(message = "Email không hợp lệ")
-    @Column(name = "Email",unique = true)
+
+    @Column(name = "Email", unique = true)
     private String email;
     @Column(name = "Dob")
     @Temporal(TemporalType.DATE)
-    @Past(message = "Ngày sinh phải nhỏ hơn ngày hiện tại")
+
     private Date dob;
     @Size(max = 2147483647)
     @Column(name = "Notes")
     private String notes;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "CreatedAt")
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "CreatedAt", nullable = false, updatable = false)
     private Date createdAt;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerId")
     @JsonIgnore
     private Collection<Appointment> appointmentCollection;
@@ -202,9 +193,14 @@ public class Customer implements Serializable {
         return true;
     }
 
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = new Date();
+    }
+
     @Override
     public String toString() {
         return "com.spring.Springweb.Entity.Customer[ id=" + id + " ]";
     }
-    
+
 }

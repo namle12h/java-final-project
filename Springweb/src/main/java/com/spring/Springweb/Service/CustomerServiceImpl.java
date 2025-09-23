@@ -16,14 +16,19 @@ import org.springframework.stereotype.Service;
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
-    private final ValidationCustomer validationCustomer;
 
     @Override
     public Customer create(Customer customer) {
-        List<String> errors = validationCustomer.validate(customer);
-        if (!errors.isEmpty()) {
-            throw new IllegalArgumentException(String.join(", ", errors));
+        // Check phone duplicate
+        if (customer.getPhone() != null && customerRepository.existsByPhone(customer.getPhone())) {
+            throw new IllegalArgumentException("Số điện thoại đã tồn tại!");
         }
+
+        // Check email duplicate (nếu cần)
+        if (customer.getEmail() != null && customerRepository.existsByEmail(customer.getEmail())) {
+            throw new IllegalArgumentException("Email đã tồn tại!");
+        }
+
         return customerRepository.save(customer);
     }
 

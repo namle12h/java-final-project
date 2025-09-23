@@ -6,9 +6,13 @@ package com.spring.Springweb.Controller;
 
 import com.spring.Springweb.Entity.Customer;
 import com.spring.Springweb.Service.CustomerService;
+import com.spring.Springweb.validation.ValidationCustomer;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,10 +29,37 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-    @PostMapping
-    public ResponseEntity<Customer> create(@RequestBody Customer customer) {
-        return ResponseEntity.ok(customerService.create(customer));
+    // @PostMapping
+    // public ResponseEntity<Customer> create(@RequestBody Customer customer) {
+    //     return ResponseEntity.ok(customerService.create(customer));
+    // }
+@PostMapping
+public ResponseEntity<?> create(
+        @Valid @RequestBody ValidationCustomer customerDto,
+        BindingResult bindingResult) {
+    if (bindingResult.hasErrors()) {
+        List<String> errors = bindingResult.getAllErrors()
+                .stream()
+                .map(ObjectError::getDefaultMessage)
+                .toList();
+        return ResponseEntity.badRequest().body(errors);
     }
+
+    Customer customer = new Customer();
+    customer.setName(customerDto.getName());
+    customer.setPhone(customerDto.getPhone());
+    customer.setEmail(customerDto.getEmail());
+    customer.setNotes(customerDto.getNotes());
+
+    // Convert LocalDate -> java.sql.Date
+    if (customerDto.getDob() != null) {
+        customer.setDob(java.sql.Date.valueOf(customerDto.getDob()));
+    }
+
+    // createdAt auto set trong @PrePersist
+    return ResponseEntity.ok(customerService.create(customer));
+}
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Customer> update(@PathVariable Integer id, @RequestBody Customer customer) {
