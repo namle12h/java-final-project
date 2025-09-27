@@ -28,6 +28,9 @@ public abstract class BasePersonValidation {
     @Email(message = "Email không hợp lệ")
     private String email;
 
+@NotBlank(message = "Password không được để trống")
+    private String password;
+
     @PastOrPresent(message = "Ngày sinh không được lớn hơn ngày hiện tại")
     private LocalDate dob;
 

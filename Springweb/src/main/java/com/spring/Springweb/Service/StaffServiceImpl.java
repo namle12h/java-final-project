@@ -1,6 +1,6 @@
 package com.spring.Springweb.Service;
 
-import com.spring.Springweb.Dao.StaffRepository;
+import com.spring.Springweb.Repository.StaffRepository;
 import com.spring.Springweb.Entity.Staff;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +49,7 @@ public class StaffServiceImpl implements StaffService {
         staff.setName(staffInput.getName());
         staff.setPhone(staffInput.getPhone());
         staff.setEmail(staffInput.getEmail());
-        staff.setRole(staffInput.getRole());
+//        staff.setRole(staffInput.getRole());
         staff.setHireDate(staffInput.getHireDate());
         staff.setStatus(staffInput.getStatus());
 

@@ -58,7 +58,7 @@ public class InvoiceItem implements Serializable {
     private Product productId;
     @JoinColumn(name = "ServiceId", referencedColumnName = "Id")
     @ManyToOne
-    private Service serviceId;
+    private ServiceEntity serviceId;
 
     public InvoiceItem() {
     }
@@ -121,11 +121,11 @@ public class InvoiceItem implements Serializable {
         this.productId = productId;
     }
 
-    public Service getServiceId() {
+    public ServiceEntity getServiceId() {
         return serviceId;
     }
 
-    public void setServiceId(Service serviceId) {
+    public void setServiceId(ServiceEntity serviceId) {
         this.serviceId = serviceId;
     }
 

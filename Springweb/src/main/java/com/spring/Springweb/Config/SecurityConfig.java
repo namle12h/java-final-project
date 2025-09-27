@@ -4,11 +4,11 @@
  */
 package com.spring.Springweb.Config;
 
-import com.spring.Springweb.filter.JwtFilter;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,6 +20,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.spring.Springweb.filter.JwtFilter;
+
+import lombok.RequiredArgsConstructor;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -27,32 +31,53 @@ public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
 
+   @Bean
+   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+       http
+               .csrf(csrf -> csrf.disable())
+               .cors(cors -> {
+               }) // dùng bean corsConfigurationSource bên dưới
+               .authorizeHttpRequests(auth -> auth
+               // các API login, đăng ký, public mở tự do
+               .requestMatchers("/api/auth/**", "/api/public/**").permitAll()
+               .requestMatchers("/", "/home", "/index.html", "/css/**", "/js/**").permitAll()
+               // cho phép GET tất cả sản phẩm public
+               .requestMatchers(HttpMethod.POST, "/api/customers/**").permitAll()
+
+
+//               .requestMatchers(HttpMethod.GET, "/api/customers/**").hasAnyRole("ADMIN", "STAFF")
+            //    .requestMatchers("/api/services/**").permitAll()
+               .requestMatchers(HttpMethod.POST, "/api/staff/create").hasRole("ADMIN")
+.requestMatchers(HttpMethod.GET, "/api/services/**").hasAnyRole( "ADMIN")
+.requestMatchers(HttpMethod.POST, "/api/services/**").hasRole("ADMIN")
+.requestMatchers(HttpMethod.PUT, "/api/services/**").hasRole("ADMIN")
+.requestMatchers(HttpMethod.DELETE, "/api/services/**").hasRole("ADMIN")
+
+               // còn các request POST/PUT/DELETE /api/products/** thì yêu cầu ADMIN
+               .requestMatchers("/api/products/**").hasRole("ADMIN")
+               // mọi request khác phải xác thực
+               .anyRequest().authenticated()
+               )
+               .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+       // add jwt filter trước filter xác thực mặc định
+       http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+       return http.build();
+   }
     // @Bean
     // public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     //     http
-    //         .csrf(csrf -> csrf.disable()) // tắt CSRF cho API
-    //         .authorizeHttpRequests(auth -> auth
-    //             .anyRequest().permitAll() // cho phép tất cả request, không cần login
-    //         );
+    //             .csrf(csrf -> csrf.disable())
+    //             .cors(cors -> {
+    //             }) // dùng bean corsConfigurationSource nếu có
+    //             .authorizeHttpRequests(auth -> auth
+    //             .anyRequest().permitAll() // 🚀 Tất cả API mở
+    //             )
+    //             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
     //     return http.build();
     // }
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> {
-                })
-                .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/api/auth/**", "/api/products/**", "/api/public/**").permitAll()
-                .requestMatchers("/api/dashboard/**", "/api/admin/**").authenticated()
-                .anyRequest().permitAll()
-                )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
-    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -72,50 +97,4 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-// //    private final StaffService staffService;
-// //    public SecurityConfig(StaffService staffService) {
-// //        this.staffService = staffService;
-// //    }
-//     @Bean
-//     public PasswordEncoder passwordEncoder() {
-//         return new BCryptPasswordEncoder();
-//     }
-//     @Bean
-//     DaoAuthenticationProvider authProvider(UserDetailsService uds, PasswordEncoder encoder) {
-//         DaoAuthenticationProvider p = new DaoAuthenticationProvider();
-//         p.setUserDetailsService(uds);
-//         p.setPasswordEncoder(encoder);
-//         return p;
-//     }
-//     @Bean
-//     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//         http
-// //                .csrf().disable()
-//                 .authorizeHttpRequests(auth -> auth
-//                 .requestMatchers("/login", "/register", "/css/**", "/js/**", "/api/**").permitAll()
-//                 .anyRequest().authenticated()
-//                 )
-//                 .formLogin(form -> form
-//                 .loginPage("/login") // GET login form
-//                 .loginProcessingUrl("/login") // POST login handled by Spring Security
-//                 .usernameParameter("email") // name field in form
-//                 .passwordParameter("password") // name field in form
-//                 .defaultSuccessUrl("/home", true)
-//                 .permitAll()
-//                 )
-//                 .logout(logout -> logout
-//                 .logoutUrl("/logout")
-//                 .logoutSuccessUrl("/login?logout")
-//                 .permitAll()
-//                 );
-//         return http.build();
-//     }
-//     @Bean
-//     public UserDetailsService userDetailsService() {
-//         UserDetails user = User.withUsername("admin")
-//                 .password("{noop}123456") // {noop} để không mã hóa password
-//                 .roles("USER")
-//                 .build();
-//         return new InMemoryUserDetailsManager(user);
-//     }
 }

@@ -56,13 +56,13 @@ public class Review implements Serializable {
     private Date createdAt;
     @JoinColumn(name = "CustomerId", referencedColumnName = "Id")
     @ManyToOne(optional = false)
-    private Customer customerId;
+    private Customers customerId;
     @JoinColumn(name = "ProductId", referencedColumnName = "Id")
     @ManyToOne
     private Product productId;
     @JoinColumn(name = "ServiceId", referencedColumnName = "Id")
     @ManyToOne
-    private Service serviceId;
+    private ServiceEntity serviceId;
 
     public Review() {
     }
@@ -109,11 +109,11 @@ public class Review implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public Customer getCustomerId() {
+    public Customers getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(Customer customerId) {
+    public void setCustomerId(Customers customerId) {
         this.customerId = customerId;
     }
 
@@ -125,11 +125,11 @@ public class Review implements Serializable {
         this.productId = productId;
     }
 
-    public Service getServiceId() {
+    public ServiceEntity getServiceId() {
         return serviceId;
     }
 
-    public void setServiceId(Service serviceId) {
+    public void setServiceId(ServiceEntity serviceId) {
         this.serviceId = serviceId;
     }
 

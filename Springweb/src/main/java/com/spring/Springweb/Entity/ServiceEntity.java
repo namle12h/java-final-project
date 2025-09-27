@@ -5,6 +5,7 @@
 package com.spring.Springweb.Entity;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,7 +25,7 @@ import java.util.Collection;
  *
  * @author ADMIN
  */
-@Entity
+@Entity(name = "Service")
 @Table(name = "Service")
 @NamedQueries({
     @NamedQuery(name = "Service.findAll", query = "SELECT s FROM Service s"),
@@ -33,14 +34,8 @@ import java.util.Collection;
     @NamedQuery(name = "Service.findByPrice", query = "SELECT s FROM Service s WHERE s.price = :price"),
     @NamedQuery(name = "Service.findByDurationMin", query = "SELECT s FROM Service s WHERE s.durationMin = :durationMin"),
     @NamedQuery(name = "Service.findByActive", query = "SELECT s FROM Service s WHERE s.active = :active")})
-public class Service implements Serializable {
+public class ServiceEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "Id")
-    private Integer id;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 200)
@@ -59,19 +54,28 @@ public class Service implements Serializable {
     @NotNull
     @Column(name = "Active")
     private boolean active;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "serviceId")
+    private Collection<ServiceSection> serviceSectionCollection;
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "Id")
+    private Integer id;
     @OneToMany(mappedBy = "serviceId")
     private Collection<InvoiceItem> invoiceItemCollection;
     @OneToMany(mappedBy = "serviceId")
     private Collection<Review> reviewCollection;
 
-    public Service() {
+    public ServiceEntity() {
     }
 
-    public Service(Integer id) {
+    public ServiceEntity(Integer id) {
         this.id = id;
     }
 
-    public Service(Integer id, String name, BigDecimal price, int durationMin, boolean active) {
+    public ServiceEntity(Integer id, String name, BigDecimal price, int durationMin, boolean active) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -85,6 +89,48 @@ public class Service implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+
+    public Collection<InvoiceItem> getInvoiceItemCollection() {
+        return invoiceItemCollection;
+    }
+
+    public void setInvoiceItemCollection(Collection<InvoiceItem> invoiceItemCollection) {
+        this.invoiceItemCollection = invoiceItemCollection;
+    }
+
+    public Collection<Review> getReviewCollection() {
+        return reviewCollection;
+    }
+
+    public void setReviewCollection(Collection<Review> reviewCollection) {
+        this.reviewCollection = reviewCollection;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof ServiceEntity)) {
+            return false;
+        }
+        ServiceEntity other = (ServiceEntity) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "com.spring.Springweb.Entity.Service[ id=" + id + " ]";
     }
 
     public String getName() {
@@ -119,45 +165,12 @@ public class Service implements Serializable {
         this.active = active;
     }
 
-    public Collection<InvoiceItem> getInvoiceItemCollection() {
-        return invoiceItemCollection;
+    public Collection<ServiceSection> getServiceSectionCollection() {
+        return serviceSectionCollection;
     }
 
-    public void setInvoiceItemCollection(Collection<InvoiceItem> invoiceItemCollection) {
-        this.invoiceItemCollection = invoiceItemCollection;
+    public void setServiceSectionCollection(Collection<ServiceSection> serviceSectionCollection) {
+        this.serviceSectionCollection = serviceSectionCollection;
     }
 
-    public Collection<Review> getReviewCollection() {
-        return reviewCollection;
-    }
-
-    public void setReviewCollection(Collection<Review> reviewCollection) {
-        this.reviewCollection = reviewCollection;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Service)) {
-            return false;
-        }
-        Service other = (Service) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "com.spring.Springweb.Entity.Service[ id=" + id + " ]";
-    }
-    
 }

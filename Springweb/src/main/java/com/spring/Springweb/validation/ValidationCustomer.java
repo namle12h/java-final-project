@@ -4,7 +4,7 @@
  */
 package com.spring.Springweb.validation;
 
-import com.spring.Springweb.Entity.Customer;
+import com.spring.Springweb.Entity.Customers;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ public class ValidationCustomer extends BasePersonValidation {
 
 
 
-    public List<String> validate(Customer customer) {
+    public List<String> validate(Customers customer) {
         List<String> errors = new ArrayList<>();
 
         if (getName() == null || getName().trim().isEmpty()) {

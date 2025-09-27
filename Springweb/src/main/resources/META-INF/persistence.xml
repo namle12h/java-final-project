@@ -5,7 +5,6 @@
     <class>com.spring.Springweb.Entity.Product</class>
     <class>com.spring.Springweb.Entity.InvoiceItem</class>
     <class>com.spring.Springweb.Entity.Room</class>
-    <class>com.spring.Springweb.Entity.Customer</class>
     <class>com.spring.Springweb.Entity.Sysdiagrams</class>
     <class>com.spring.Springweb.Entity.StockTxn</class>
     <class>com.spring.Springweb.Entity.Service</class>
@@ -14,6 +13,11 @@
     <class>com.spring.Springweb.Entity.Invoice</class>
     <class>com.spring.Springweb.Entity.Payment</class>
     <class>com.spring.Springweb.Entity.Review</class>
+    <class>com.spring.Springweb.Entity.ServiceSection</class>
+    <class>com.spring.Springweb.Entity.ServiceSectionItem</class>
+    <class>com.spring.Springweb.Entity.SectionType</class>
+    <class>com.spring.Springweb.Entity.Users</class>
+    <class>com.spring.Springweb.Entity.Customers</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://localhost:1433;databaseName=Batch40Nodejs;encrypt=true;trustServerCertificate=true "/>
       <property name="javax.persistence.jdbc.user" value="namleadmin"/>

@@ -68,7 +68,7 @@ public class Invoice implements Serializable {
     private Appointment appointmentId;
     @JoinColumn(name = "CustomerId", referencedColumnName = "Id")
     @ManyToOne(optional = false)
-    private Customer customerId;
+    private Customers customerId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "invoiceId")
     private Collection<InvoiceItem> invoiceItemCollection;
 
@@ -134,11 +134,11 @@ public class Invoice implements Serializable {
         this.appointmentId = appointmentId;
     }
 
-    public Customer getCustomerId() {
+    public Customers getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(Customer customerId) {
+    public void setCustomerId(Customers customerId) {
         this.customerId = customerId;
     }
 

@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.spring.Springweb.Dao;
+package com.spring.Springweb.Repository;
 
 import com.spring.Springweb.Entity.Customer;
 import java.util.Optional;

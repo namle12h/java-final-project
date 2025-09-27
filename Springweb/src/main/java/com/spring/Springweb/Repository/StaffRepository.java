@@ -1,4 +1,4 @@
-package com.spring.Springweb.Dao;
+package com.spring.Springweb.Repository;
 
 import com.spring.Springweb.Entity.Staff;
 import org.springframework.data.jpa.repository.JpaRepository;

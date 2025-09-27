@@ -61,9 +61,8 @@ public class StaffController {
         staff.setName(staffDto.getName());
         staff.setPhone(staffDto.getPhone());
         staff.setEmail(staffDto.getEmail());
-        staff.setUsername(staffDto.getUsername());
+        staff.getusername(staffDto.getUsername());
         staff.setPasswordHash(passwordEncoder.encode(staffDto.getPassword())); // OK
-        staff.setRole(staffDto.getRole());
         staff.setStatus(staffDto.getStatus());
 
         return ResponseEntity.ok(staffService.createStaff(staff));

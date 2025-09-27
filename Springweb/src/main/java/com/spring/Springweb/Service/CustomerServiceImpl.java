@@ -4,11 +4,12 @@
  */
 package com.spring.Springweb.Service;
 
-import com.spring.Springweb.Dao.CustomerRepository;
 import com.spring.Springweb.Entity.Customer;
-import com.spring.Springweb.validation.ValidationCustomer;
+import com.spring.Springweb.Repository.CustomerRepository;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Customer create(Customer customer) {
@@ -29,6 +31,11 @@ public class CustomerServiceImpl implements CustomerService {
             throw new IllegalArgumentException("Email đã tồn tại!");
         }
 
+        // ✅ Mã hóa mật khẩu trước khi lưu
+        if (customer.getPasswordHash() != null) {
+            customer.setPasswordHash(passwordEncoder.encode(customer.getPasswordHash()));
+        }
+
         return customerRepository.save(customer);
     }
 
@@ -40,7 +47,10 @@ public class CustomerServiceImpl implements CustomerService {
         existing.setPhone(customer.getPhone());
         existing.setEmail(customer.getEmail());
         existing.setDob(customer.getDob());
-        existing.setNotes(customer.getNotes());
+        // ✅ Mã hóa mật khẩu trước khi lưu
+        if (customer.getPasswordHash() != null) {
+            customer.setPasswordHash(passwordEncoder.encode(customer.getPasswordHash()));
+        }
         return customerRepository.save(existing);
     }
 
@@ -59,4 +69,5 @@ public class CustomerServiceImpl implements CustomerService {
     public List<Customer> getAll() {
         return customerRepository.findAll();
     }
+
 }

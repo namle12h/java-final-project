@@ -74,7 +74,7 @@ public class Appointment implements Serializable {
     @JoinColumn(name = "CustomerId", referencedColumnName = "Id")
     @ManyToOne(optional = false)
     @JsonIgnore  
-    private Customer customerId;
+    private Customers customerId;
     @JoinColumn(name = "RoomId", referencedColumnName = "Id")
     @ManyToOne
     private Room roomId;
@@ -147,11 +147,11 @@ public class Appointment implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public Customer getCustomerId() {
+    public Customers getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(Customer customerId) {
+    public void setCustomerId(Customers customerId) {
         this.customerId = customerId;
     }
 

@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.spring.Springweb.Dao.AppointmentRepository;
+import com.spring.Springweb.Repository.AppointmentRepository;
 import com.spring.Springweb.Entity.Appointment;
 
 import lombok.RequiredArgsConstructor;

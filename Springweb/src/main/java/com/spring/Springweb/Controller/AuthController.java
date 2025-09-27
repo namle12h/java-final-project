@@ -1,15 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.spring.Springweb.Controller;
 
-import com.spring.Springweb.Dao.StaffRepository;
-import com.spring.Springweb.Entity.Staff;
-import com.spring.Springweb.util.JwtUtil;
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,12 +10,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spring.Springweb.Entity.User;
+import com.spring.Springweb.Repository.UserRepository;
+import com.spring.Springweb.util.JwtUtil;
+
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final StaffRepository staffRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
@@ -32,24 +32,26 @@ public class AuthController {
         String email = loginRequest.get("email");
         String password = loginRequest.get("password");
 
-        // Tìm staff theo email
-        Staff staff = staffRepository.findByEmail(email)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Email không tồn tại"));
 
-        // Kiểm tra password
-        if (!passwordEncoder.matches(password, staff.getPasswordHash())) {
+        if (!passwordEncoder.matches(password, user.getPasswordHash())) {
             return ResponseEntity.badRequest().body("Sai email hoặc mật khẩu");
         }
 
-        // Sinh JWT bằng username (unique)
-        String token = jwtUtil.generateToken(staff.getUsername());
+        // sinh token từ userName
+        // String token = jwtUtil.generateToken(user.getUsername());
+        String token = jwtUtil.generateToken(
+        Map.of("role", user.getRole()),  // thêm claim role
+        user.getUsername()
+);
+
 
         return ResponseEntity.ok(Map.of("token", token));
     }
 
     @GetMapping("/get-profile")
     public ResponseEntity<?> getProfile(HttpServletRequest request) {
-        // Lấy token từ header
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(401).body("Thiếu token");
@@ -58,24 +60,22 @@ public class AuthController {
         String token = authHeader.substring(7);
         String username = jwtUtil.extractUsername(token);
 
-        // Lấy staff từ DB
-        Staff staff = staffRepository.findByUsername(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User không tồn tại"));
 
-        // Trả thông tin profile (bỏ password)
-//        return ResponseEntity.ok(Map.of(
-//                "accessToken", token,
-//                "refreshToken", "" // nếu chưa có thì để rỗng
-//        ));
         return ResponseEntity.ok(Map.of(
                 "accessToken", token,
-                "refreshToken", "", // nếu chưa có thì để rỗng
+                "refreshToken", "",
                 "user", Map.of(
-                        "id", staff.getId(),
-                        "email", staff.getEmail(),
-                        "username", staff.getUsername()
+                        "id", user.getId(),
+                        "email", user.getEmail(),
+                        "username", user.getUsername(),
+                        "role", user.getClass().getAnnotation(DiscriminatorValue.class).value() // ADMIN, STAFF, CUSTOMER
                 )
         ));
     }
-
+    
+    
+    
 }
+ 
