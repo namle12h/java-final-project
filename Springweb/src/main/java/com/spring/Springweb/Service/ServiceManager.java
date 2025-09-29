@@ -4,11 +4,14 @@
  */
 package com.spring.Springweb.Service;
 
-import com.spring.Springweb.Entity.ServiceEntity;
-import org.springframework.stereotype.Service;
-
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.spring.Springweb.Entity.ServiceEntity;
 
 @Service
 public interface ServiceManager {
@@ -22,4 +25,8 @@ public interface ServiceManager {
     public ServiceEntity updateService(Integer id, ServiceEntity serviceDetails);
 
     public void deleteService(Integer id);
+
+    public String uploadImage(MultipartFile file) throws IOException;
+
+    public ServiceEntity UploadServiceImage(Integer id, MultipartFile file) throws IOException;
 }

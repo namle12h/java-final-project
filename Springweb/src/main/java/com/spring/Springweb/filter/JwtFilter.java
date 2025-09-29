@@ -67,9 +67,7 @@ public class JwtFilter extends OncePerRequestFilter {
                     var user = userRepository.findByUsername(username).orElse(null);
 
                     if (user != null && jwtUtil.validateToken(token, user.getUsername())) {
-                        // Gán authority cho SecurityContext
-                        // var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
-                        // ⚡ lấy role từ discriminator column
+                      
                         String roles = user.getRole(); // ADMIN / STAFF / CUSTOMER
 
                         List<GrantedAuthority> authorities

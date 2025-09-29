@@ -70,6 +70,7 @@ public class AuthController {
                         "id", user.getId(),
                         "email", user.getEmail(),
                         "username", user.getUsername(),
+                        "name",user.getName(),
                         "role", user.getClass().getAnnotation(DiscriminatorValue.class).value() // ADMIN, STAFF, CUSTOMER
                 )
         ));

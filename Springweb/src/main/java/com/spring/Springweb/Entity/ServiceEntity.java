@@ -54,6 +54,13 @@ public class ServiceEntity implements Serializable {
     @NotNull
     @Column(name = "Active")
     private boolean active;
+
+    @Column(length = 1000, name = "Description")
+    private String description;
+
+    @Column(length = 255, name = "ImageUrl")
+    private String imageUrl;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "serviceId")
     private Collection<ServiceSection> serviceSectionCollection;
 
@@ -90,7 +97,6 @@ public class ServiceEntity implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
-
 
     public Collection<InvoiceItem> getInvoiceItemCollection() {
         return invoiceItemCollection;
@@ -171,6 +177,22 @@ public class ServiceEntity implements Serializable {
 
     public void setServiceSectionCollection(Collection<ServiceSection> serviceSectionCollection) {
         this.serviceSectionCollection = serviceSectionCollection;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
 }

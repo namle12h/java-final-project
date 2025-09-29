@@ -5,6 +5,8 @@
 package com.spring.Springweb.Service;
 
 import com.spring.Springweb.Repository.ServiceRepository;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import com.spring.Springweb.Entity.ServiceEntity;
 import javax.management.ServiceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -24,6 +27,7 @@ public class ServiceManagerImpl implements ServiceManager {
 
     @Autowired
     private ServiceRepository serviceRepository;
+    private final ImageService imageService;
 
     @Override
     public List<ServiceEntity> getAllServices() {
@@ -48,6 +52,8 @@ public class ServiceManagerImpl implements ServiceManager {
             service.setPrice(serviceDetails.getPrice());
             service.setDurationMin(serviceDetails.getDurationMin());
             service.setActive(serviceDetails.getActive());
+            service.setImageUrl(serviceDetails.getImageUrl());
+            service.setDescription(serviceDetails.getDescription());
             return serviceRepository.save(service);
         }).orElseThrow(() -> new RuntimeException("Service not found with id " + id));
     }
@@ -62,6 +68,20 @@ public class ServiceManagerImpl implements ServiceManager {
         } catch (ServiceNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public ServiceEntity UploadServiceImage(Integer id, MultipartFile file) throws IOException {
+        ServiceEntity service = serviceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Service not found"));
+        String url = imageService.uploadImage(file);
+        service.setImageUrl(url);
+        return serviceRepository.save(service);
+    }
+
+    @Override
+    public String uploadImage(MultipartFile file) throws IOException {
+        return imageService.uploadImage(file);
     }
 
 }

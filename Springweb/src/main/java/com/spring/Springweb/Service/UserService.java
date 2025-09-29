@@ -5,9 +5,6 @@
 package com.spring.Springweb.Service;
 
 import com.spring.Springweb.Entity.User;
-import com.spring.Springweb.Repository.AdminRepository;
-import com.spring.Springweb.Repository.CustomerRepository;
-import com.spring.Springweb.Repository.StaffRepository;
 import com.spring.Springweb.Repository.UserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
