@@ -50,6 +50,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/services/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/services/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/services/**").hasRole("ADMIN")
+                .requestMatchers("/api/appointments/**").permitAll()
                 // còn các request POST/PUT/DELETE /api/products/** thì yêu cầu ADMIN
                 .requestMatchers("/api/products/**").hasRole("ADMIN")
                 // mọi request khác phải xác thực

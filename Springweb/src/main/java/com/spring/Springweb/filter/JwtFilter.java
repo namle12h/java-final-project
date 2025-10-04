@@ -35,7 +35,9 @@ public class JwtFilter extends OncePerRequestFilter {
     private static final String[] PUBLIC_URLS = {
         "/api/auth/**",
         "/api/public/**",
-        "/api/customers" // khách tự đăng ký
+        "/api/customers",
+        "/api/appointments/**"
+         // khách tự đăng ký
     };
 
     @Override
@@ -89,5 +91,9 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+        String pathtest = request.getServletPath();
+System.out.println(">>> ServletPath = " + pathtest);
+System.out.println(">>> RequestURI  = " + request.getRequestURI());
+
     }
 }
